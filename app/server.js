@@ -30,7 +30,7 @@ const syncPublicNetwork = async () => {
         await blockManager.syncToHeight(500);
     };
 
-    await app();
+    // await app();
 };
 
 const start = async () => {
