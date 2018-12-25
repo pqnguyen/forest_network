@@ -3,7 +3,7 @@ const db = require('../config/db');
 
 const Transaction = db.define('transaction', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true
     },
@@ -34,6 +34,10 @@ const Transaction = db.define('transaction', {
     block_height: {
         type: Sequelize.INTEGER,
         defaultValue: 0
+    },
+    time: {
+        type: Sequelize.DATE,
+        allowNull: false
     }
 });
 

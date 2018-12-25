@@ -18,6 +18,12 @@ const syncToHeight = async (toHeight) => {
         const orginalBlock = await networkManager.getBlockWithHeight(i);
         await processBlock(orginalBlock);
     }
+
+    // const heights = [17588, 17594, 17751, 17753, 17804, 17810];
+    // for (let height of heights) {
+    //     const orginalBlock = await networkManager.getBlockWithHeight(height);
+    //     await processBlock(orginalBlock);
+    // }
 };
 
 

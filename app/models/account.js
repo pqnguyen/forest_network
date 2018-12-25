@@ -35,7 +35,7 @@ const Account = db.define('account', {
         defaultValue: ''
     },
     picture: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         defaultValue: ''
     },
 });
