@@ -159,6 +159,61 @@ app.get('/api/transaction_history', async (req, res) => {
     res.json(response);
 });
 
+
+const {getParamsCreateAccount, getParamsUpdateAccount, getParamsFollowings} = require('./operation/account');
+const {getParamsInteract} = require('./operation/interact');
+const {getParamsPayment} = require('./operation/payment');
+const {getParamsPost} = require('./operation/post');
+
+app.get('/api/feeds', async (req, res) => {
+    const {publicKey} = req.query;
+
+    const account = await Account.findOne({
+        where: {address: publicKey}
+    });
+
+    const transactions = await Transaction.findAll({
+        where: {
+            account: account.address
+        },
+        order: [['time', 'DESC']],
+    });
+
+    const response = [];
+    for (let tx of transactions) {
+        const data = tx.toJSON();
+        let params = null;
+        if (tx.operation === 'create_account') {
+            params = getParamsCreateAccount(tx);
+        }
+
+        if (tx.operation === 'payment') {
+            params = await getParamsPayment(account, tx);
+        }
+
+        if (tx.operation === 'update_account') {
+            params = getParamsUpdateAccount(tx);
+        }
+
+        if (tx.operation === 'post') {
+            params = getParamsPost(tx);
+        }
+
+        if (tx.operation === 'update_account' && tx.params.key === 'followings') {
+            params = await getParamsFollowings(tx);
+        }
+
+        if (tx.operation === 'interact') {
+            params = getParamsInteract(tx);
+        }
+        data.params = params;
+
+        response.push(data);
+    }
+
+    res.json(response);
+});
+
 app.listen(port, () => console.log(
     `Example app listening on port ${port}!`
 ));

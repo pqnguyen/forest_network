@@ -75,9 +75,58 @@ const processFollowing = async (account, tx) => {
     });
 };
 
+const getParamsUpdateAccount = (tx) => {
+    let {key, value} = tx.params;
+
+    const data = {
+        key: key
+    };
+    value = Buffer.from(value);
+    if (key === 'name') {
+        data.name = value.toString('utf-8');
+    } else if (key === 'picture' && value.length > 0) {
+        data.picture = `data:image/jpeg;base64,${value.toString('base64')}`;
+    }
+
+    return data;
+};
+
+const getParamsCreateAccount = (tx) => {
+    return tx.params;
+};
+
+const getParamsFollowings = async (tx) => {
+    const data = {
+        key: tx.params.key
+    };
+    try {
+        data.followings = Followings
+            .decode(Buffer.from(tx.params.value))
+            .addresses.map(a => ({
+                address: base32.encode(a),
+            }));
+
+        const accounts = await Account.findAll({
+            where: {
+                address: data.followings
+            }
+        });
+
+        data.who = [];
+        for (let account of accounts) data.who.push(account.toJSON());
+    } catch (err) {
+        data.followings = [];
+    }
+
+    return data;
+};
+
 module.exports = {
     processUpdateAccount,
     processCreateAccount,
     processCalculateEnergy,
-    processFollowing
+    processFollowing,
+    getParamsUpdateAccount,
+    getParamsCreateAccount,
+    getParamsFollowings
 };

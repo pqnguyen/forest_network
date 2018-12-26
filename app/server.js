@@ -21,7 +21,7 @@ const syncPublicNetwork = async () => {
         console.log('event', event);
         console.log('localDb.isSync', localDb.isSync);
         if (localDb.isSync) return;
-        // await blockManager.syncToPublicNode(event);
+        await blockManager.syncToPublicNode(event);
     });
     client.subscribe({query: 'tm.event = \'Tx\''}, (event) => {
         // console.log("Tx", event);

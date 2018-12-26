@@ -29,6 +29,26 @@ const processPost = async (account, tx) => {
     }
 };
 
+const getParamsPost = (tx) => {
+    const data = {};
+    try {
+        if (tx.params.keys.length > 0) {
+            throw Error('Cannot decrypt post');
+        }
+        let post = PlainTextContent.decode(Buffer.from(tx.params.content));
+        if (post.type !== 1) {
+            throw Error('Cannot decode post');
+        }
+        data.post = post.text;
+    } catch (err) {
+        console.log('err', err);
+        data.post = null;
+    }
+
+    return data;
+};
+
 module.exports = {
-    processPost
+    processPost,
+    getParamsPost
 };

@@ -56,7 +56,35 @@ const processInteract = async (account, tx) => {
     }
 };
 
+const getParamsInteract = (tx) => {
+    const data = {};
+    data.toHash = tx.params.object;
+    try {
+        const temp_reaction = ReactContent.decode(Buffer.from(tx.params.content));
+        if (temp_reaction.type === 2) {
+            data.reaction = temp_reaction;
+        } else {
+            data.reaction = null;
+        }
+    } catch (err) {
+        data.reaction = null;
+    }
+
+    try {
+        const temp_comment = PlainTextContent.decode(Buffer.from(tx.params.content));
+        if (temp_comment.type === 1) {
+            data.comment = temp_comment;
+        } else {
+            data.comment = null;
+        }
+    } catch (err) {
+        data.comment = null;
+    }
+
+    return data;
+};
 
 module.exports = {
-    processInteract
+    processInteract,
+    getParamsInteract
 };
