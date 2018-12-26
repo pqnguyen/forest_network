@@ -1,4 +1,4 @@
-const Utils = require('../utils');
+const localDb = require('../config/config');
 const Block = require('../models/block');
 const networkManager = require('./network');
 const txManager = require('./transaction');
@@ -7,8 +7,10 @@ const Queue = require('./queue');
 let cacheLastestBlock = null;
 
 const syncToPublicNode = async (newestBlock) => {
+    localDb.isSync = true;
     const nHeight = newestBlock.block.header.height;
     await syncToHeight(nHeight);
+    localDb.isSync = false;
 };
 
 const syncToHeight = async (toHeight) => {

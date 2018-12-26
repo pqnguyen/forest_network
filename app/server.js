@@ -1,6 +1,7 @@
 let {RpcClient} = require('tendermint');
 
 const db = require('./config/db');
+const localDb = require('./config/config');
 const Transaction = require('./models/transaction');
 const Account = require('./models/account');
 const Block = require('./models/block');
@@ -15,12 +16,12 @@ const syncDb = () => {
 
 const syncPublicNetwork = async () => {
     let client = RpcClient('wss://komodo.forest.network:443');
-    let check = false;
 
     client.subscribe({query: 'tm.event = \'NewBlock\''}, async (event) => {
-        if (check) return;
-        await blockManager.syncToPublicNode(event);
-        check = true;
+        console.log('event', event);
+        console.log('localDb.isSync', localDb.isSync);
+        if (localDb.isSync) return;
+        // await blockManager.syncToPublicNode(event);
     });
     client.subscribe({query: 'tm.event = \'Tx\''}, (event) => {
         // console.log("Tx", event);
@@ -30,7 +31,7 @@ const syncPublicNetwork = async () => {
         await blockManager.syncToHeight(20000);
     };
 
-    await app();
+    // await app();
 };
 
 const start = async () => {
