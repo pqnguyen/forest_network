@@ -164,6 +164,8 @@ const {getParamsCreateAccount, getParamsUpdateAccount, getParamsFollowings} = re
 const {getParamsInteract} = require('./operation/interact');
 const {getParamsPayment} = require('./operation/payment');
 const {getParamsPost} = require('./operation/post');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 app.get('/api/feeds', async (req, res) => {
     const {
@@ -178,7 +180,10 @@ app.get('/api/feeds', async (req, res) => {
 
     let transactions = await Transaction.findAll({
         where: {
-            account: account.address
+            account: account.address,
+            operation: {
+                [Op.ne]: 'interact'
+            }
         },
         order: [['time', 'DESC']],
     });
@@ -188,7 +193,6 @@ app.get('/api/feeds', async (req, res) => {
     const fromOffet = pageIndex * pageSize;
     const toOffset = fromOffet + pageSize;
     transactions = transactions.slice(fromOffet, toOffset);
-    console.log(fromOffet, toOffset);
 
     response.transactions = [];
     for (let tx of transactions) {
