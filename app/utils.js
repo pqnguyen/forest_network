@@ -13,6 +13,16 @@ const decode = (data) => {
     return tx;
 };
 
+const build_field_from_list = (array, field) => {
+    const res = [];
+    for (let ele of array) {
+        res.push(ele[field]);
+    }
+
+    return res;
+};
+
 module.exports = {
-    decode
+    decode,
+    buildFieldFromList: build_field_from_list
 };

@@ -1,3 +1,5 @@
+const Account = require('../models/account');
+
 const processPayment = async (account, tx) => {
     if (account.address === tx.params.address) {
         account.balance += tx.params.amount;

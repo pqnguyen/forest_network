@@ -19,7 +19,7 @@ const syncPublicNetwork = async () => {
 
     client.subscribe({query: 'tm.event = \'NewBlock\''}, async (event) => {
         if (check) return;
-        // await blockManager.syncToPublicNode(event);
+        await blockManager.syncToPublicNode(event);
         check = true;
     });
     client.subscribe({query: 'tm.event = \'Tx\''}, (event) => {

@@ -13,3 +13,4 @@ const Following = db.define('following', {
 });
 
 module.exports = Following;
+
