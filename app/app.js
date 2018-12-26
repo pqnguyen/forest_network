@@ -166,20 +166,31 @@ const {getParamsPayment} = require('./operation/payment');
 const {getParamsPost} = require('./operation/post');
 
 app.get('/api/feeds', async (req, res) => {
-    const {publicKey} = req.query;
+    const {
+        publicKey,
+        pageIndex,
+        pageSize = 10
+    } = req.query;
 
     const account = await Account.findOne({
         where: {address: publicKey}
     });
 
-    const transactions = await Transaction.findAll({
+    let transactions = await Transaction.findAll({
         where: {
             account: account.address
         },
         order: [['time', 'DESC']],
     });
 
-    const response = [];
+    const response = {};
+    response.numberItems = transactions.length;
+    const fromOffet = pageIndex * pageSize;
+    const toOffset = fromOffet + pageSize;
+    transactions = transactions.slice(fromOffet, toOffset);
+    console.log(fromOffet, toOffset);
+
+    response.transactions = [];
     for (let tx of transactions) {
         const data = tx.toJSON();
         let params = null;
@@ -208,7 +219,7 @@ app.get('/api/feeds', async (req, res) => {
         }
         data.params = params;
 
-        response.push(data);
+        response.transactions.push(data);
     }
 
     res.json(response);
