@@ -2,6 +2,7 @@ const vstruct = require('varstruct');
 const moment = require('moment');
 const base32 = require('base32.js');
 
+const Utils = require('../utils');
 const Account = require('../models/account');
 const Following = require('../models/following');
 
@@ -107,15 +108,21 @@ const getParamsFollowings = async (tx) => {
                 address: base32.encode(a),
             }));
 
+        const addresses = Utils.buildFieldFromList(data.followings, 'address');
         const accounts = await Account.findAll({
             where: {
-                address: data.followings
+                address: addresses
             }
         });
 
         data.who = [];
-        for (let account of accounts) data.who.push(account.toJSON());
+        for (let account of accounts) {
+            const accountDTO = account.toJSON();
+            accountDTO.picture = '';
+            data.who.push(accountDTO);
+        }
     } catch (err) {
+        console.log('err', err);
         data.followings = [];
     }
 
