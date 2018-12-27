@@ -85,7 +85,8 @@ const getParamsUpdateAccount = (tx) => {
     if (key === 'name') {
         data.name = value.toString('utf-8');
     } else if (key === 'picture' && value.length > 0) {
-        data.picture = `data:image/jpeg;base64,${value.toString('base64')}`;
+        // data.picture = `data:image/jpeg;base64,${value.toString('base64')}`;
+        data.pictureSize = value.length;
     }
 
     return data;
