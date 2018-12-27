@@ -211,7 +211,7 @@ app.get('/api/feeds', async (req, res) => {
         }
 
         if (tx.operation === 'post') {
-            params = getParamsPost(tx);
+            params = await getParamsPost(tx);
         }
 
         if (tx.operation === 'update_account' && tx.params.key === 'followings') {
