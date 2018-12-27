@@ -190,9 +190,9 @@ app.get('/api/feeds', async (req, res) => {
 
     const response = {};
     response.numberItems = transactions.length;
-    const fromOffet = pageIndex * pageSize;
-    const toOffset = fromOffet + pageSize;
-    transactions = transactions.slice(fromOffet, toOffset);
+    const fromOffset = parseInt(pageIndex) * parseInt(pageSize);
+    const toOffset = parseInt(fromOffset) + parseInt(pageSize);
+    transactions = transactions.slice(fromOffset, toOffset);
 
     response.transactions = [];
     for (let tx of transactions) {
